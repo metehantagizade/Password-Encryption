@@ -1,0 +1,30 @@
+		public static string GetSaltWithEmail(string _email)
+		{
+			// Fetch salt from db based on email address
+		}
+		public static string GeneratePasswordWithSalt(string password , byte[] salt)
+		{
+			var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 10000);
+			byte[] hash = pbkdf2.GetBytes(20);
+			byte[] hashBytes = new byte[36];
+			Array.Copy(salt, 0, hashBytes, 0, 16);
+			Array.Copy(hash, 0, hashBytes, 16, 20);
+			string savedPasswordHash = Convert.ToBase64String(hashBytes);
+			return savedPasswordHash;
+		}
+		public static ACCOUNT GetUserWithEmailAndPassword(string _email, string password_hash)
+		{
+			//Fetch ACCOUNT from db based on email adress and hashed password
+		}
+
+		public JsonResult Login(string _email , string _password)
+		{
+			string userSalt = GetSaltWithEmail(_email);
+			byte[] randomSalt = Convert.FromBase64String(userSalt);
+			string password_hash = GeneratePasswordWithSalt(_password, randomSalt);
+			ACCOUNT account = GetUserWithEmailAndPassword(_email, password_hash);
+			if(account != null)
+			{
+				//Login
+			}
+		}
